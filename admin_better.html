@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+       /* Styling for form container */
+#addProductSection {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Styling for form labels */
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Styling for form inputs */
+input[type="text"],
+input[type="number"],
+textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+/* Styling for checkbox */
+input[type="checkbox"] {
+    margin-top: 10px;
+}
+/* Styling for product list */
+#productList {
+    list-style-type: none;
+    padding: 0;
+}
+
+#productList li {
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Styling for product name in the list */
+#productList li h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #333;
+}
+
+/* Styling for product price in the list */
+#productList li p {
+    margin: 5px 0;
+    font-size: 16px;
+    color: #666;
+}
+
+/* Styling for edit and delete buttons */
+.editButton,
+.deleteButton {
+    background-color: #4caf50;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: background-color 0.3s;
+}
+
+/* Styling for edit and delete buttons on hover */
+.editButton:hover,
+.deleteButton:hover {
+    background-color: #45a049;
+}
+
+
+/* Styling for submit button */
+button[type="submit"] {
+    background-color: #4caf50;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+/* Styling for submit button on hover */
+button[type="submit"]:hover {
+    background-color: #45a049;
+}
+ 
+    </style>
+</head>
+<body>
+    <h1>Admin Dashboard</h1>
+
+    <!-- Add Product Form -->
+    <div id="addProductSection" style="display: none;">
+        <h2>Add Product</h2>
+        <form id="addProductForm">
+            <label for="productName">Product Name:</label>
+            <input type="text" id="productName" name="productName" required><br>
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" required></textarea><br>
+            <label for="price">Price:</label>
+            <input type="number" id="price" name="price" required><br>
+            <label for="category">Category:</label>
+            <input type="text" id="category" name="category"><br>
+            <label for="discount">Discount:</label>
+            <input type="number" id="discount" name="discount"><br>
+            <label for="inStock">In Stock:</label>
+            <input type="checkbox" id="inStock" name="inStock"><br>
+            <label for="inventoryId">Inventory ID:</label>
+            <input type="number" id="inventoryId" name="inventoryId"><br>
+            <button type="submit">Add Product</button>
+        </form>
+    </div>
+
+    <!-- Add Product Form -->
+<div id="addProductSection" style="display: none;">
+    <h2>Add Product</h2>
+    <!-- The form for adding and editing products -->
+    <form id="productForm">
+        <input type="hidden" id="productId" name="productId"> <!-- Hidden field to store product ID -->
+        <label for="productName">Product Name:</label>
+        <input type="text" id="productName" name="productName" required><br>
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" required></textarea><br>
+        <label for="price">Price:</label>
+        <input type="number" id="price" name="price" required><br>
+        <label for="category">Category:</label>
+        <input type="text" id="category" name="category"><br>
+        <label for="discount">Discount:</label>
+        <input type="number" id="discount" name="discount"><br>
+        <label for="inStock">In Stock:</label>
+        <input type="checkbox" id="inStock" name="inStock"><br>
+        <label for="inventoryId">Inventory ID:</label>
+        <input type="number" id="inventoryId" name="inventoryId"><br>
+        <button type="submit">Save</button>
+    </form>
+</div>
+
+<div id="updateProductSection" style="display: none;">
+    <h2>Update Product</h2>
+    <!-- The form for adding and editing products -->
+    <form id="productForm">
+        <input type="hidden" id="productId" name="productId"> <!-- Hidden field to store product ID -->
+        <label for="productName">Product Name:</label>
+        <input type="text" id="productName" name="productName" required><br>
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" required></textarea><br>
+        <label for="price">Price:</label>
+        <input type="number" id="price" name="price" required><br>
+        <label for="category">Category:</label>
+        <input type="text" id="category" name="category"><br>
+        <label for="discount">Discount:</label>
+        <input type="number" id="discount" name="discount"><br>
+        <label for="inStock">In Stock:</label>
+        <input type="checkbox" id="inStock" name="inStock"><br>
+        <label for="inventoryId">Inventory ID:</label>
+        <input type="number" id="inventoryId" name="inventoryId"><br>
+        <button type="submit">Save</button>
+    </form>
+</div>
+    <!-- Buttons to open forms -->
+    <button onclick="openAddProductForm()">Add Product</button>
+    <!-- <button onclick="openDeleteProductForm()">Delete Product</button> -->
+    <button onclick="editProduct()">Update Product</button> <!-- Change the function name here -->
+
+    <!-- Product List -->
+    <h2>Product List</h2>
+    <ul id="productList"></ul>
+    <!-- HTML code remains unchanged -->
+
+<script>
+    const baseURL = 'http://127.0.0.1:600';
+
+    // Fetch all products on page load
+    document.addEventListener('DOMContentLoaded', fetchProducts);
+
+    // Function to fetch products and display them
+    
+// Function to fetch products and display them
+function fetchProducts() {
+    fetch(`${baseURL}/`)
+    .then(response => response.json())
+    .then(products => {
+        console.log('Products:', products);
+        const productList = document.getElementById('productList');
+        productList.innerHTML = '';
+        products.forEach(product => {
+            const listItem = document.createElement('li');
+            const editButton = document.createElement('button');
+            editButton.textContent = 'Edit';
+            editButton.className = 'editButton';
+            editButton.addEventListener('click', () => editProduct(product.product_id));
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'Delete';
+            deleteButton.className = 'deleteButton';
+            deleteButton.addEventListener('click', () => deleteProduct(product.product_id));
+            listItem.innerHTML = `
+                <h3>${product.product_name}</h3>
+                <p>$${product.price} - In Stock: ${product.in_stock ? 'Yes' : 'No'}</p>
+            `;
+            listItem.appendChild(editButton);
+            listItem.appendChild(deleteButton);
+            productList.appendChild(listItem);
+        });
+    });
+}
+
+    // Function to open add product form
+    function openAddProductForm() {
+        document.getElementById('addProductSection').style.display = 'block';
+    }
+
+    // Function to add a product
+    document.getElementById('addProductForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const data = {
+            product_name: document.getElementById('productName').value,
+            description: document.getElementById('description').value,
+            category: document.getElementById('category').value,
+            price: parseFloat(document.getElementById('price').value),
+            discount: parseFloat(document.getElementById('discount').value),
+            in_stock: document.getElementById('inStock').checked,
+            inventory_id: parseInt(document.getElementById('inventoryId').value)
+        };
+        console.log('Add Product Request:', data);
+        fetch(`${baseURL}/addProduct`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data) // Ensure data is converted to JSON string
+        })
+        .then(response => {
+            if (response.ok) {
+                fetchProducts();
+                document.getElementById('addProductSection').style.display = 'none';
+            }
+        });
+    });
+
+    // Function to delete a product
+    function deleteProduct(productId) {
+        console.log('Delete Product Request:', productId);
+        fetch(`${baseURL}/delete_product/${productId}`, {
+            method: 'DELETE'
+        })
+        .then(response => {
+            if (response.ok) {
+                fetchProducts();
+            }
+        });
+    }
+
+    // Function to open update product form (you need to implement this)
+    // Function to edit a product
+// Function to edit a product
+function editProduct(productId) {
+    // Fetch product details by ID
+    fetch(`${baseURL}/product_by_id/${productId}`)
+    .then(response => response.json())
+    .then(product => {
+        // Populate form fields with product details
+        document.getElementById('productId').value = productId;
+        document.getElementById('productName').value = product.product_name;
+        document.getElementById('description').value = product.description;
+        document.getElementById('price').value = product.price;
+        document.getElementById('category').value = product.category;
+        document.getElementById('discount').value = product.discount;
+        document.getElementById('inStock').checked = product.in_stock;
+        document.getElementById('inventoryId').value = product.inventory_id;
+
+        // Show the form for editing
+        document.getElementById('updateProductSection').style.display = 'block';
+    });
+}
+
+
+// Function to submit the product form (for both adding and editing)
+document.getElementById('productForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const formData = new FormData(this);
+    const data = {};
+    formData.forEach((value, key) => {
+        // Convert 'inStock' value to boolean
+        if (key === 'inStock') {
+            data[key] = value === 'on';
+        } else {
+            data[key] = value;
+        }
+    });
+
+    // Determine whether it's an add or edit operation based on the presence of productId
+    const productId = parseInt(document.getElementById('productId').value);
+    const url = productId ? `${baseURL}/update_product/${productId}` : `${baseURL}/addProduct`;
+
+    fetch(url, {
+        method: productId ? 'PUT' : 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        if (response.ok) {
+            fetchProducts();
+            document.getElementById('addProductSection').style.display = 'none';
+        }
+    });
+});
+
+    // Function to edit a product (you need to implement this)
+    function editProduct(productId) {
+        fetch(`${baseURL}/product_by_id/${productId}`)
+            .then(response => response.json())
+            .then(product => {
+                document.getElementById('productId').value = productId;
+                document.getElementById('productName').value = product.product_name;
+                document.getElementById('description').value = product.description;
+                document.getElementById('price').value = product.price;
+                document.getElementById('category').value = product.category;
+                document.getElementById('discount').value = product.discount;
+                document.getElementById('inStock').checked = product.in_stock;
+                document.getElementById('inventoryId').value = product.inventory_id;
+
+                // Show the form for editing
+                document.getElementById('addProductSection').style.display = 'block';
+            });
+    }
+    document.getElementById('productForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        const formData = new FormData(this);
+        const data = {};
+        formData.forEach((value, key) => {
+            // Convert 'inStock' value to boolean
+            if (key === 'inStock') {
+                data[key] = value === 'on';
+            } else {
+                data[key] = value;
+            }
+        });
+
+        // Determine whether it's an add or edit operation based on the presence of productId
+        const productId = parseInt(document.getElementById('productId').value);
+        const url = productId ? `${baseURL}/update_product/${productId}` : `${baseURL}/addProduct`;
+
+        fetch(url, {
+            method: productId ? 'PUT' : 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => {
+                if (response.ok) {
+                    fetchProducts();
+                    document.getElementById('addProductSection').style.display = 'none';
+                }
+            });
+    });
+
+</script>
+
+<!-- HTML code remains unchanged -->
+
+
+    <!-- <script>
+        const baseURL = 'http://127.0.0.1:600';
+
+        // Fetch all products on page load
+        document.addEventListener('DOMContentLoaded', fetchProducts);
+
+        // Function to fetch products and display them
+        function fetchProducts() {
+            fetch(`${baseURL}/`)
+            .then(response => response.json())
+            .then(products => {
+                console.log('Products:', products);
+                const productList = document.getElementById('productList');
+                productList.innerHTML = '';
+                products.forEach(product => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = `${product.product_name} - $${product.price} - In Stock: ${product.in_stock ? 'Yes' : 'No'}`;
+                    const editButton = document.createElement('button');
+                    editButton.textContent = 'Edit';
+                    editButton.addEventListener('click', () => editProduct(product.product_id));
+                    const deleteButton = document.createElement('button');
+                    deleteButton.textContent = 'Delete';
+                    deleteButton.addEventListener('click', () => deleteProduct(product.product_id));
+                    listItem.appendChild(editButton);
+                    listItem.appendChild(deleteButton);
+                    productList.appendChild(listItem);
+                });
+            });
+        }
+
+        // Function to open add product form
+        function openAddProductForm() {
+        document.getElementById('addProductSection').style.display = 'block';
+    }
+
+    // Function to add a product
+    document.getElementById('addProductForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const formData = new FormData(this);
+        const data = {};
+        formData.forEach((value, key) => {
+            // Convert 'inStock' value to boolean
+            if (key === 'inStock') {
+                data[key] = value === 'on';
+            } else {
+                data[key] = value;
+            }
+        });
+        console.log('Add Product Request:', data);
+        fetch(`${baseURL}/addProduct`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data) // Ensure data is converted to JSON string
+        })
+        .then(response => {
+            if (response.ok) {
+                fetchProducts();
+                document.getElementById('addProductSection').style.display = 'none';
+            }
+        });
+    });
+
+    // Function to delete a product
+    function deleteProduct(productId) {
+        console.log('Delete Product Request:', productId);
+        fetch(`${baseURL}/delete_product/${productId}`, {
+            method: 'DELETE'
+        })
+        .then(response => {
+            if (response.ok) {
+                fetchProducts();
+            }
+        });
+    }
+
+    // Function to open update product form (you need to implement this)
+    function openUpdateProductForm() {
+        // Implement open update product form
+        console.log('Opening update product form');
+    }
+
+    // Function to edit a product (you need to implement this)
+    function editProduct(productId) {
+        // Implement edit functionality
+        console.log('Editing Product:', productId);
+    }
+    </script> -->
+</body>
+</html>

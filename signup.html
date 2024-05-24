@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 90%;
+            max-width: 1000px;
+            margin: auto;
+            background-color: #f4f4f4;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .signup-text {
+            flex: 1;
+        }
+
+        .form-container {
+            flex: 1;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.5em; /* Adjusted font size */
+        }
+
+        form {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        label {
+            font-weight: bold;
+            font-size: 0.9em; /* Adjusted font size */
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="tel"],
+        select {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            box-sizing: border-box;
+            font-size: 0.9em; /* Adjusted font size */
+        }
+
+        input[type="submit"] {
+            width: 100%;
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 0;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-size: 1em; /* Adjusted font size */
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="signup-text">
+            <h2>Sign Up</h2>
+        </div>
+        <div class="form-container">
+            <form id="signupForm" method="post" action="/signup" onsubmit="submitForm(event)">
+                <label for="fname">First Name:</label>
+                <input type="text" id="fname" name="fname" required>
+
+                <label for="lname">Last Name:</label>
+                <input type="text" id="lname" name="lname" required>
+
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+
+                <label for="ph_number">Phone Number:</label>
+                <input type="tel" id="ph_number" name="ph_number">
+
+                <label for="address_1">Address Line 1:</label>
+                <input type="text" id="address_1" name="address_1" required>
+
+                <label for="address_2">Address Line 2:</label>
+                <input type="text" id="address_2" name="address_2">
+
+                <label for="city">City:</label>
+                <input type="text" id="city" name="city" required>
+
+                <label for="postal_code">Postal Code:</label>
+                <input type="text" id="postal_code" name="postal_code" required>
+
+                <label for="country">Country:</label>
+                <input type="text" id="country" name="country" required>
+
+                <label for="provider">Payment Provider:</label>
+                <input type="text" id="provider" name="provider" required>
+
+                <label for="credentials">Payment Credentials:</label>
+                <input type="text" id="credentials" name="credentials" required>
+
+                <input type="hidden" id="role" name="role" value="customer">
+
+                <input type="submit" value="Sign Up">
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function submitForm(event) {
+            event.preventDefault(); // Prevent default form submission
+            var formData = {
+                "fname": document.getElementById('fname').value,
+                "lname": document.getElementById('lname').value,
+                "email": document.getElementById('email').value,
+                "password": document.getElementById('password').value,
+                "role": document.getElementById('role').value,
+                "address": {
+                    "address_1": document.getElementById('address_1').value,
+                    "address_2": document.getElementById('address_2').value,
+                    "city": document.getElementById('city').value,
+                    "postal_code": document.getElementById('postal_code').value,
+                    "country": document.getElementById('country').value
+                },
+                "payment_details": {
+                    "provider": document.getElementById('provider').value,
+                    "credentials": document.getElementById('credentials').value
+                },
+                "ph_number": document.getElementById('ph_number').value
+            };
+
+            var xhr = new XMLHttpRequest(); // Create new XMLHttpRequest object
+            xhr.open("POST", "http://127.0.0.1:5000/signup", true); // Open a new POST request
+            xhr.setRequestHeader("Content-Type", "application/json"); // Set request header
+            xhr.onload = function () {
+                if (xhr.status === 201) {
+                    alert('User created successfully');
+                    window.location.href = 'login.html';
+                } else {
+                    alert('Error: ' + xhr.responseText);
+                }
+            };
+            xhr.onerror = function () {
+                alert('Request failed');
+            };
+            xhr.send(JSON.stringify(formData)); // Send form data as JSON
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            padding: 8px;
+            background-color: #f8f8f8; /* light gray */
+        }
+        th {
+            background-color: #4CAF50; /* green */
+            color: white;
+            font-weight: bold;
+            text-align: center;
+        }
+        td {
+            text-align: left;
+        }
+        caption {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="orders"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            fetchOrders();
+        });
+
+        function fetchOrders() {
+            const userId = getCookie('user_id');
+            const apiUrl = `http://127.0.0.1:7000/get_orders/${userId}`;
+
+            fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                displayOrders(data.orders);
+            })
+            .catch(error => console.error('Error fetching orders:', error));
+        }
+
+        function getCookie(name) {
+            const cookieName = name + '=';
+            const decodedCookie = decodeURIComponent(document.cookie);
+            const cookieArray = decodedCookie.split(';');
+
+            for(let i = 0; i < cookieArray.length; i++) {
+                let cookie = cookieArray[i].trim();
+                if (cookie.indexOf(cookieName) === 0) {
+                    return cookie.substring(cookieName.length, cookie.length);
+                }
+            }
+            return '';
+        }
+
+        function displayOrders(orders) {
+    const ordersDiv = document.getElementById('orders');
+    let clubs = {};
+
+    // Group orders by club_id
+    orders.forEach(order => {
+        if (!clubs[order.club_id]) {
+            clubs[order.club_id] = [];
+        }
+        clubs[order.club_id].push(order);
+    });
+
+    // Create a table for each club's orders
+    for (let clubId in clubs) {
+        let clubOrders = clubs[clubId];
+        let table = document.createElement('table');
+        let headerRow = table.insertRow();
+        let headers = ['Product Name', 'Quantity', 'Date', 'Amount', 'Status']; // Change 'Product ID' to 'Product Name' in headers
+
+        // Create table headers
+        headers.forEach(headerText => {
+            let th = document.createElement('th');
+            let text = document.createTextNode(headerText);
+            th.appendChild(text);
+            headerRow.appendChild(th);
+        });
+
+        // Populate table rows with order data
+        clubOrders.forEach(order => {
+            let row = table.insertRow();
+            let productIdCell = row.insertCell(); // Cell for product name
+            fetch(`http://127.0.0.1:600/product_by_id/${order.product_id}`) // Fetch product details
+                .then(response => response.json())
+                .then(product => {
+                    productIdCell.textContent = product.product_name; // Set product name in cell
+                })
+                .catch(error => console.error('Error fetching product:', error));
+
+            ['quantity', 'date', 'amount', 'status'].forEach(key => {
+                let cell = row.insertCell();
+                let text = document.createTextNode(order[key]);
+                cell.appendChild(text);
+            });
+        });
+
+        // Add club ID as a caption
+        let caption = document.createElement('caption');
+        // let captionText = document.createTextNode('Club ID: ' + clubId);
+        // caption.appendChild(captionText);
+        table.appendChild(caption);
+
+        // Add table to the page
+        ordersDiv.appendChild(table);
+    }
+}
+
+    </script>
+</body>
+</html>
